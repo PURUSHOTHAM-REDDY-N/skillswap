@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { io } from 'socket.io-client';
-import axios from 'axios';
 import Navbar from '../components/navbar/Navbar'; // Import Navbar
 import MessageInput from '../components/chat/MessageInput'; // Import MessageInput
 import { useNavigate, useParams } from 'react-router-dom';
@@ -9,6 +8,7 @@ import Footer from "../components/footer/Footer";
 import Background from "../components/background/Background";
 import "../components/background/Background.css";
 import { IoMdWarning } from 'react-icons/io'; // Importing a warning icon for the button
+import { api, SOCKET_URL } from '../lib/api';
 
 const ChatPage = () => {
   const { sessionId } = useParams(); // Get sessionId from URL parameter
@@ -20,7 +20,6 @@ const ChatPage = () => {
   const [scheduledTime, setScheduledTime] = useState('');
   const [messages, setMessages] = useState([]); // List of messages in the current chat
   const [socket, setSocket] = useState(null); // Socket connection
-  const [notificationSocket, setNotificationSocket] = useState(null); // Notification socket connection
   const [rating, setRating] = useState(1);
   const [feedback, setFeedback] = useState('');
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
@@ -36,7 +35,7 @@ const ChatPage = () => {
     const fetchConnections = async () => {
       const token = localStorage.getItem('token');
       try {
-        const response = await axios.get('http://localhost:5001/api/sessions/accepted', {
+        const response = await api.get('/sessions/accepted', {
           headers: { 'x-auth-token': token },
         });
         setConnections(response.data);
@@ -63,7 +62,7 @@ const ChatPage = () => {
       return;
     }
 
-    const socketIo = io('http://localhost:5001/sessions', {
+    const socketIo = io(`${SOCKET_URL}/sessions`, {
       transports: ['websocket'],
       query: { sessionId },
     });
@@ -96,15 +95,13 @@ const ChatPage = () => {
 
   // Set up the **Notification Socket.io connection** (separate from the chat socket)
   useEffect(() => {
-    const socketIoNotification = io('http://localhost:5001/notifications', {
+    const socketIoNotification = io(`${SOCKET_URL}/notifications`, {
       transports: ['websocket'],
     });
 
     socketIoNotification.on('connect', () => {
       console.log('Notification WebSocket connected:', socketIoNotification.id);
     });
-
-    setNotificationSocket(socketIoNotification);
 
     // Subscribe the user to notifications (you need to pass the userId from localStorage)
     const userId = JSON.parse(localStorage.getItem('user'))._id;
@@ -121,7 +118,7 @@ const ChatPage = () => {
       const fetchMessages = async () => {
         const token = localStorage.getItem('token');
         try {
-          const response = await axios.get(`http://localhost:5001/api/sessions/message/${selectedConnection._id}`, {
+          const response = await api.get(`/sessions/message/${selectedConnection._id}`, {
             headers: { 'x-auth-token': token },
           });
 
@@ -184,7 +181,7 @@ const ChatPage = () => {
     });
 
     // Store the message in the backend
-    axios.post('http://localhost:5001/api/sessions/message', formData, {
+    api.post('/sessions/message', formData, {
       headers: { 'x-auth-token': token },
     })
       .then((response) => {
@@ -219,8 +216,8 @@ const ChatPage = () => {
   const handleScheduleSession = async () => {
     const token = localStorage.getItem('token');
     try {
-      const response = await axios.post(
-        'http://localhost:5001/api/sessions/schedule',
+      await api.post(
+        '/sessions/schedule',
         {
           sessionId,
           newMeetingDate: scheduledDate,
@@ -251,8 +248,8 @@ const ChatPage = () => {
 
       console.log(`Marking session as ${status}`);
 
-      await axios.post(
-        'http://localhost:5001/api/sessions/mark-session',
+      await api.post(
+        '/sessions/mark-session',
         {
           sessionId,
           status,
@@ -269,7 +266,7 @@ const ChatPage = () => {
 
       setIsFeedbackModalOpen(false); // Close feedback modal after submission
       // Refresh session data to update the status
-      const updatedSession = await axios.get('http://localhost:5001/api/sessions/accepted', {
+      const updatedSession = await api.get('/sessions/accepted', {
         headers: {
           'x-auth-token': token, // Pass token for the session data request as well
         },
@@ -330,7 +327,7 @@ const ChatPage = () => {
     const token = localStorage.getItem('token');
 
     try {
-      const response = await axios.post('http://localhost:5001/api/reports', formData, {
+      await api.post('/reports', formData, {
         headers: { 'x-auth-token': token },
       });
 
@@ -349,17 +346,6 @@ const ChatPage = () => {
   // Get the logged-in user
   const loggedInUser = JSON.parse(localStorage.getItem('user'));
 
-  // Check if the logged-in user is user1 or user2 in the current session
-  const isUser1 = selectedConnection?.userId1?._id === loggedInUser?._id;
-  const isUser2 = selectedConnection?.userId2?._id === loggedInUser?._id;
-
-  // Check if feedback has been given by the logged-in user
-  const isFeedbackGivenByLoggedInUser = isUser1
-    ? selectedConnection?.feedbackByUser1 // Assuming these fields contain the feedback for user1
-    : isUser2
-      ? selectedConnection?.feedbackByUser2 // Assuming these fields contain the feedback for user2
-      : false; // If neither, feedback hasn't been provided by the logged-in user
-
   // Check if both users have provided feedback
   const bothUsersProvidedFeedback = selectedConnection?.feedbackByUser1 && selectedConnection?.feedbackByUser2;
 
@@ -368,9 +354,6 @@ const ChatPage = () => {
 
   // Disable interaction if the session is completed or canceled and both users have provided feedback
   const isChatBlocked = isSessionCompletedOrCanceled && bothUsersProvidedFeedback;
-
-  // Show the feedback modal if the logged-in user hasn't provided feedback yet
-  const shouldShowFeedbackModal = !isFeedbackGivenByLoggedInUser && !isChatBlocked;
 
   // Show "Schedule Next Meeting" only if the session is not completed or canceled and both users haven't provided feedback
   const shouldShowScheduleButton = !isSessionCompletedOrCanceled && !bothUsersProvidedFeedback;

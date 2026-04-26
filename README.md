@@ -138,6 +138,8 @@ These instructions will guide you to set up and run the project locally. Make su
        JWT_SECRET=<Your JWT Secret>
        ADMIN_EMAIL=<Your Admin Email>
        ADMIN_PASSWORD=<Your Admin Password>
+       CLIENT_ORIGIN=http://localhost:5173
+       PUBLIC_SERVER_URL=http://localhost:5001
        ```
 
 ### Running the Application
@@ -159,6 +161,31 @@ These instructions will guide you to set up and run the project locally. Make su
      ```
 
 This will start both the backend and frontend locally. You can now open `http://localhost:5173` in your browser to access the SkillSwap application.
+
+### Running with Docker Compose
+
+1. Edit [backend/.env](/Users/taranjotsingh/Documents/Untitled/skillswap/backend/.env:1) and put your MongoDB credentials in `MONGO_URI`.
+   If `backend/.env` is missing, Docker Compose falls back to [backend/.env.example](/Users/taranjotsingh/Documents/Untitled/skillswap/backend/.env.example:1).
+2. Edit [client/.env](/Users/taranjotsingh/Documents/Untitled/skillswap/client/.env:1) if your frontend should talk to a different backend URL.
+   If `client/.env` is missing, Docker Compose falls back to [client/.env.example](/Users/taranjotsingh/Documents/Untitled/skillswap/client/.env.example:1).
+3. From the project root, start the stack:
+
+   ```bash
+   docker compose up --build
+   ```
+
+4. Open:
+
+   * Frontend: `http://localhost:5173`
+   * Backend API: `http://localhost:5001`
+   * MongoDB: `mongodb://localhost:27017/skillswap`
+
+The Compose stack starts three services: `client`, `backend`, and `mongo`. Uploaded files are persisted in `backend/uploads`, and MongoDB data is stored in the named volume `mongo_data`.
+
+Frontend/backend URLs are now environment-driven:
+
+* Backend env: `CLIENT_ORIGIN`, `PUBLIC_SERVER_URL`
+* Frontend env: `VITE_API_URL`, `VITE_SOCKET_URL`, `VITE_UPLOADS_URL`
 
 ## How to Use
 

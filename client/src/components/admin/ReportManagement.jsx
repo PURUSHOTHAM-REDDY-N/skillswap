@@ -7,6 +7,7 @@ import {
   blockUser
 } from '../../redux/slices/adminSlice';
 import { FaComments } from 'react-icons/fa';
+import { buildUploadUrl } from '../../lib/api';
 
 const ReportManagement = () => {
   const dispatch = useDispatch();
@@ -112,12 +113,12 @@ const ReportManagement = () => {
                 <div>
                   <span className="font-bold">Screenshot:</span>
                   <a
-                    href={`http://localhost:5001${r.screenshot}`}
+                    href={buildUploadUrl(r.screenshot)}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
                     <img
-                      src={`http://localhost:5001${r.screenshot}`}
+                      src={buildUploadUrl(r.screenshot)}
                       alt="Report screenshot"
                       className="mt-2 w-32 h-32 object-cover rounded border-2 border-white shadow"
                     />

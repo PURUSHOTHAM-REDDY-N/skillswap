@@ -7,10 +7,11 @@ import {
   changePassword,
   clearPasswordMessage
 } from '../redux/slices/adminProfileSlice';
+import { buildUploadUrl } from '../lib/api';
 
 const AdminProfile = () => {
   const dispatch = useDispatch();
-  const { user, loading } = useSelector(s => s.profile);
+  const { user, loading } = useSelector(s => s.adminProfile);
 
   const [form, setForm] = useState({
     name: '',
@@ -177,7 +178,7 @@ const AdminProfile = () => {
                     src={
                       profileImage
                         ? form.profilePicture
-                        : `http://localhost:5001/uploads/${form.profilePicture}`
+                        : buildUploadUrl(`/uploads/${form.profilePicture}`)
                     }
                     alt="Profile Preview"
                     className="w-20 h-20 rounded-full object-cover mx-auto"

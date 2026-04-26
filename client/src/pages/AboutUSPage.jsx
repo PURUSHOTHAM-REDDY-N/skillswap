@@ -15,6 +15,10 @@ import miraalImg from "../assets/miraal.jpg";
 import muneebImg from "../assets/muneeb.jpg";
 import hashimImg from "../assets/hashim.jpeg";
 
+const MotionDiv = motion.div;
+const MotionH1 = motion.h1;
+const MotionP = motion.p;
+
 // Team data with images
 const team = [
   {
@@ -77,15 +81,15 @@ const AboutUsPage = () => {
 
         <div />
         <section className="h-1/4 flex flex-col justify-center text-center py-8 px-4 ">
-          <motion.h1
+          <MotionH1
             initial={{ y: -40, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.6 }}
             className="text-4xl font-bold mb-3"
           >
             About SkillSwap
-          </motion.h1>
-          <motion.p
+          </MotionH1>
+          <MotionP
             initial={{ y: 40, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.6 }}
@@ -93,14 +97,14 @@ const AboutUsPage = () => {
           >
             A futuristic peer-to-peer skill exchange platform, connecting
             learners and experts worldwide.
-          </motion.p>
+          </MotionP>
         </section>
 
         {/* Mission & Vision */}
         <section className="py-16 px-6 grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
           {/* Mission Block */}
           <div>
-            <motion.div
+            <MotionDiv
               initial={{ x: -40, opacity: 0 }}
               whileInView={{ x: 0, opacity: 1 }}
               transition={{ duration: 0.6 }}
@@ -111,12 +115,12 @@ const AboutUsPage = () => {
                 To empower individuals to grow through collaborative learning
                 and skill-sharing communities.
               </p>
-            </motion.div>
+            </MotionDiv>
           </div>
 
           {/* Vision Block */}
           <div>
-            <motion.div
+            <MotionDiv
               initial={{ x: 40, opacity: 0 }}
               whileInView={{ x: 0, opacity: 1 }}
               transition={{ duration: 0.6 }}
@@ -127,7 +131,7 @@ const AboutUsPage = () => {
                 A global network where anyone can teach and learn any
                 skill—seamlessly, affordably, and quickly.
               </p>
-            </motion.div>
+            </MotionDiv>
           </div>
         </section>
 
@@ -141,7 +145,7 @@ const AboutUsPage = () => {
           </h2>
           <div className="flex justify-center gap-10 max-w-full mx-auto flex-wrap">
             {team.map((member, index) => (
-              <motion.div
+              <MotionDiv
                 key={index}
                 whileHover={{ scale: 1.05 }}
                 className="bg-white/70 p-6 rounded-xl text-center shadow-lg border border-blue-500 w-full sm:w-1/2 md:w-1/5"
@@ -169,7 +173,7 @@ const AboutUsPage = () => {
                     />
                   </a>
                 </div>
-              </motion.div>
+              </MotionDiv>
             ))}
           </div>
         </section>

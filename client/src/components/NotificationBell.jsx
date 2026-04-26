@@ -1,20 +1,21 @@
 // src/components/NotificationBell.jsx
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setNotifications } from '../redux/slices/notificationSlice';
+import { addNotification } from '../redux/slices/notificationSlice';
 import { FaBell } from 'react-icons/fa';
 import io from 'socket.io-client';
 import NotificationDropdown from './NotificationDropdown';
+import { SOCKET_URL } from '../lib/api';
 
 const NotificationBell = () => {
   const dispatch = useDispatch();
-  const { notifications, unreadCount } = useSelector((state) => state.notifications);
+  const { unreadCount } = useSelector((state) => state.notifications);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   useEffect(() => {
-    const socket = io('http://localhost:5001/notifications');
+    const socket = io(`${SOCKET_URL}/notifications`);
     socket.on('new_notification', (notification) => {
-      dispatch(setNotifications([notification]));
+      dispatch(addNotification(notification));
     });
     return () => socket.disconnect();
   }, [dispatch]);

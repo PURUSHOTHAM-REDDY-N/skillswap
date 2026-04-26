@@ -1,10 +1,12 @@
 // src/pages/RegisterPage.jsx
 import React, { useState } from "react";
-import axios from "axios";
 import { motion } from "framer-motion";
 import { FiUser, FiMail, FiLock } from "react-icons/fi";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import registerImage from "../assets/auth-bg.jpg"; // Use same image as login
+import { api } from "../lib/api";
+
+const MotionDiv = motion.div;
 
 const RegisterPage = () => {
   const [name, setName] = useState("");
@@ -40,8 +42,8 @@ const RegisterPage = () => {
     }
 
     try {
-      const response = await axios.post(
-        "http://localhost:5001/api/auth/register",
+      await api.post(
+        "/auth/register",
         {
           name,
           email,
@@ -63,14 +65,14 @@ const RegisterPage = () => {
   return (
     <div className="flex fixed inset-0 overflow-hidden">
       {/* Left: Form and Title */}
-      <motion.div
+      <MotionDiv
         initial={{ y: "100%" }}
         animate={{ y: 0 }}
         transition={{ duration: 1, ease: "easeOut" }}
         className="w-1/2 h-full flex flex-col justify-center items-center bg-gradient-to-br from-gray-100 via-blue-100 to-blue-200 relative z-10"
       >
         {/* Title */}
-        <motion.div
+        <MotionDiv
           initial={{ y: -100, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 1, ease: "easeOut" }}
@@ -83,7 +85,7 @@ const RegisterPage = () => {
           <p className="text-sm sm:text-base md:text-lg text-gray-600 italic mt-2">
             Empower your skills. Connect. Grow.
           </p>
-        </motion.div>
+        </MotionDiv>
 
         {/* Form Box */}
         <div className="mt-6 bg-gradient-to-br from-blue-400 via-blue-500 to-indigo-600 rounded-3xl shadow-2xl p-8 w-[85%] max-w-md">
@@ -200,10 +202,10 @@ const RegisterPage = () => {
             </div>
           </form>
         </div>
-      </motion.div>
+      </MotionDiv>
 
       {/* Right: Image */}
-      <motion.div
+      <MotionDiv
         initial={{ x: "100%" }}
         animate={{ x: 0 }}
         transition={{ duration: 1.2, ease: "easeOut" }}
@@ -211,7 +213,7 @@ const RegisterPage = () => {
         style={{
           backgroundImage: `url(${registerImage})`,
         }}
-      ></motion.div>
+      ></MotionDiv>
     </div>
   );
 };

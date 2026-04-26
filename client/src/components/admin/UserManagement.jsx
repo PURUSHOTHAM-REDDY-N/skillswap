@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   fetchUsers,
@@ -34,15 +34,15 @@ const UserManagement = () => {
     });
   };
 
-  const handleDelete = id => {
+  const handleDelete = useCallback((id) => {
     if (window.confirm('Are you sure you want to delete this user?')) {
       dispatch(deleteUser(id)).then(() => dispatch(fetchUsers()));
     }
-  };
+  }, [dispatch]);
 
-  const handleUnblock = id => {
+  const handleUnblock = useCallback((id) => {
     dispatch(unblockUser(id)).then(() => dispatch(fetchUsers()));
-  };
+  }, [dispatch]);
 
   // Memoize derived rows to avoid re-render on unrelated state changes
   const userRows = useMemo(
@@ -90,7 +90,7 @@ const UserManagement = () => {
         </tr>
       );
     }),
-    [users]
+    [handleDelete, handleUnblock, users]
   );
 
   return (

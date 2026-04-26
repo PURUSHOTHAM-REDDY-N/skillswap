@@ -1,22 +1,18 @@
 // src/pages/SkillMatchingPage.jsx
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/navbar/Navbar';
 import Background from "../components/background/Background";
 import "../components/background/Background.css";
 import { FaPaperPlane, FaSearch } from 'react-icons/fa';
-import MatchList from '../components/MatchList';
-import SessionSchedulingModal from '../components/session/SessionSchedulingModal';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'; // Make sure to import the CSS
 import Footer from "../components/footer/Footer";
+import { api, buildProfilePictureUrl } from '../lib/api';
 
 const SkillMatchingPage = () => {
   const [matches, setMatches] = useState([]);
   const [ratings, setRatings] = useState({});  // To store ratings for each match
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedUserId, setSelectedUserId] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [sessionDetails, setSessionDetails] = useState({});
   const navigate = useNavigate();
@@ -36,7 +32,7 @@ const SkillMatchingPage = () => {
       }
 
       try {
-        const response = await axios.get('http://localhost:5001/api/matches', {
+        const response = await api.get('/matches', {
           headers: { 'x-auth-token': token },
         });
 
@@ -49,7 +45,7 @@ const SkillMatchingPage = () => {
         // Fetch the average rating for each match's user
         const ratingsPromises = response.data.map(async (match) => {
           const userId = match.user._id;  // Get the userId of the match
-          const ratingResponse = await axios.get(`http://localhost:5001/api/sessions/ratings/${userId}`, {
+          const ratingResponse = await api.get(`/sessions/ratings/${userId}`, {
             headers: { 'x-auth-token': token },  // Make sure the token is sent here as well
           });
           return { userId, averageRating: ratingResponse.data.averageRating };
@@ -68,16 +64,6 @@ const SkillMatchingPage = () => {
 
     fetchMatches();
   }, [navigate]);
-
-  const handleScheduleSession = (userId) => {
-    setSelectedUserId(userId);
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setSelectedUserId(null);
-  };
 
   const sendSessionRequest = async (userId) => {
     const token = localStorage.getItem('token');
@@ -130,14 +116,14 @@ const SkillMatchingPage = () => {
     }
   
     try {
-      await axios.post(
-        'http://localhost:5001/api/sessions/request',
+      await api.post(
+        '/sessions/request',
         { userId2: userId, sessionDate: date, sessionTime: time, skill },
         { headers: { 'x-auth-token': token } }
       );
   
-      await axios.post(
-        'http://localhost:5001/api/notifications/send',
+      await api.post(
+        '/notifications/send',
         {
           userId,
           message: `You have a new session request for ${skill} on ${date} at ${time}`,
@@ -207,7 +193,7 @@ const SkillMatchingPage = () => {
                     <div className="flex items-center gap-4 mb-4">
                       <img
                         className="w-14 h-14 rounded-full border border-white/20"
-                        src={match.user?.profilePicture ? `http://localhost:5001/uploads/profile-pictures/${match.user.profilePicture}` : '/default-avatar.png'}
+                        src={buildProfilePictureUrl(match.user?.profilePicture)}
                         alt="Avatar"
                       />
                       <div className="w-full">

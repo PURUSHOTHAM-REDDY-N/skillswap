@@ -5,13 +5,15 @@ import {
   loginSuccess,
   loginFailure,
 } from "../redux/slices/authSlice";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import loginImage from "../assets/auth-bg.jpg";
 import { FiMail, FiLock } from "react-icons/fi";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { motion } from "framer-motion";
 import {jwtDecode} from 'jwt-decode'; // Added this line
+import { api } from "../lib/api";
+
+const MotionDiv = motion.div;
 
 const LoginPage = () => {
   const dispatch = useDispatch();
@@ -43,7 +45,7 @@ const LoginPage = () => {
     // API call
     dispatch(loginStart());
     try {
-      const response = await axios.post("http://localhost:5001/api/auth/login", {
+      const response = await api.post("/auth/login", {
         email,
         password,
       });
@@ -51,9 +53,6 @@ const LoginPage = () => {
 
       const token = response.data.token;
       const decoded = jwtDecode(token)
-
-      const role = decoded?.user?.role || 'user';
-
 
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify({
@@ -82,14 +81,14 @@ const LoginPage = () => {
   return (
     <div className="flex fixed inset-0 overflow-hidden">
       {/* Left: Login Form */}
-      <motion.div
+      <MotionDiv
         initial={{ y: "100%" }}
         animate={{ y: 0 }}
         transition={{ duration: 1, ease: "easeOut" }}
         className="w-1/2 h-full flex flex-col justify-center items-center bg-gradient-to-br from-gray-100 via-blue-100 to-blue-200 relative z-10"
       >
         {/* Animated Website Title */}
-        <motion.div
+        <MotionDiv
           initial={{ y: -100, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 1, ease: "easeOut" }}
@@ -101,7 +100,7 @@ const LoginPage = () => {
           <p className="text-sm sm:text-base md:text-lg text-gray-600 italic mt-1">
             Empower your skills. Connect. Grow.
           </p>
-        </motion.div>
+        </MotionDiv>
 
         {/* Login Box */}
         <div className="mt-12 bg-gradient-to-br from-blue-400 via-blue-500 to-indigo-600 rounded-3xl shadow-2xl p-6 sm:p-8 md:p-10 w-[90%] max-w-md">
@@ -174,10 +173,10 @@ const LoginPage = () => {
             </p>
           </div>
         </div>
-      </motion.div>
+      </MotionDiv>
 
       {/* Right: Background Image Animation */}
-      <motion.div
+      <MotionDiv
         initial={{ x: "100%" }}
         animate={{ x: 0 }}
         transition={{ duration: 1.2, ease: "easeOut" }}
@@ -185,7 +184,7 @@ const LoginPage = () => {
         style={{
           backgroundImage: `url(${loginImage})`,
         }}
-      ></motion.div>
+      ></MotionDiv>
     </div>
   );
 };

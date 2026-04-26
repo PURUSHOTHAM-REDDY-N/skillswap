@@ -2,6 +2,7 @@ import React, { useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchEngagementStats } from '../../redux/slices/adminSlice';
 import { FaFacebookF, FaTwitter, FaLinkedinIn } from 'react-icons/fa';
+import { buildProfilePictureUrl } from '../../lib/api';
 
 // Helper to turn zero-based index into ordinal label
 const getOrdinal = (i) => {
@@ -30,10 +31,7 @@ const UserCard = React.memo(({ user, rank }) => {
   // Memoize computed values for performance
   const ordinal = useMemo(() => getOrdinal(rank), [rank]);
   const pictureUrl = useMemo(
-    () =>
-      profilePicture
-        ? `http://localhost:5001/uploads/profile-pictures/${profilePicture}`
-        : defaultAvatar,
+    () => (profilePicture ? buildProfilePictureUrl(profilePicture) : defaultAvatar),
     [profilePicture]
   );
   const teachSkills = useMemo(

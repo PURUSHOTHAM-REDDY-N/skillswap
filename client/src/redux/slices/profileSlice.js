@@ -1,8 +1,9 @@
 // profileSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { api } from '../../lib/api';
 
 export const updateProfile = createAsyncThunk('profile/updateProfile', async (formData) => {
-  const res = await axios.put('/api/users/profile', formData);
+  const res = await api.put('/users/profile', formData);
   return res.data;
 });
 

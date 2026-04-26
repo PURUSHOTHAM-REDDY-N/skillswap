@@ -1,7 +1,7 @@
 // src/components/session/SessionSchedulingModal.jsx
 import React, { useState } from 'react';
 
-const SessionSchedulingModal = ({ isOpen, closeModal, scheduleSession, selectedUserId }) => {
+const SessionSchedulingModal = ({ isOpen, closeModal, scheduleSession }) => {
   const [sessionDate, setSessionDate] = useState('');
   const [sessionTime, setSessionTime] = useState('');
 

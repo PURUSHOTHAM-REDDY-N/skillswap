@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import AdminNavbar from '../components/admin/Navbar';
-import AdminSidebar from '../components/admin/AdminSideBar';
+import AdminSidebar from '../components/admin/AdminSidebar';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchProfile } from '../redux/slices/adminProfileSlice';
+import { buildUploadUrl } from '../lib/api';
 
 const AdminDashboardPage = () => {
   const dispatch = useDispatch();
-  const { user } = useSelector((state) => state.profile);
+  const { user } = useSelector((state) => state.adminProfile);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
@@ -21,7 +22,7 @@ const AdminDashboardPage = () => {
   const profileImage = user?.profilePicture
     ? user.profilePicture.startsWith('http')
       ? user.profilePicture
-      : `http://localhost:5001/uploads/${user.profilePicture}`
+      : buildUploadUrl(`/uploads/${user.profilePicture}`)
     : 'https://placehold.co/150x150?text=Admin';
 
   return (

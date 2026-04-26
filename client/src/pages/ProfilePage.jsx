@@ -1,6 +1,5 @@
 // src/pages/ProfilePage.jsx
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import Navbar from "../components/navbar/Navbar";
 import NotificationBell from "../components/NotificationBell";
 import ProfileCard from "../components/ProfileCard"; // Import ProfileCard
@@ -16,6 +15,9 @@ import Footer from "../components/footer/Footer";
 import defaultAvatar from "../assets/avatar.jpeg";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
+import { api, buildProfilePictureUrl } from "../lib/api";
+
+const MotionDiv = motion.div;
 
 const ProfilePage = () => {
   const [user, setUser] = useState(null);
@@ -53,16 +55,16 @@ const ProfilePage = () => {
       const token = localStorage.getItem("token");
       if (!token) return;
       try {
-        const { data } = await axios.get(
-          "http://localhost:5001/api/users/profile",
+        const { data } = await api.get(
+          "/users/profile",
           { headers: { "x-auth-token": token } }
         );
         setUser(data);
         setSkillsToTeach(data.skillsToTeach);
         setSkillsToLearn(data.skillsToLearn);
 
-        const notifRes = await axios.get(
-          `http://localhost:5001/api/notifications/${data._id}`,
+        const notifRes = await api.get(
+          `/notifications/${data._id}`,
           { headers: { "x-auth-token": token } }
         );
         dispatch(setNotifications(notifRes.data));
@@ -80,16 +82,16 @@ const ProfilePage = () => {
       if (!token) return;
       try {
         const [p, a, co, c] = await Promise.all([
-          axios.get("http://localhost:5001/api/sessions/pending", {
+          api.get("/sessions/pending", {
             headers: { "x-auth-token": token },
           }),
-          axios.get("http://localhost:5001/api/sessions/acceptedOnly", {
+          api.get("/sessions/acceptedOnly", {
             headers: { "x-auth-token": token },
           }),
-          axios.get("http://localhost:5001/api/sessions/completed", {
+          api.get("/sessions/completed", {
             headers: { "x-auth-token": token },
           }),
-          axios.get("http://localhost:5001/api/sessions/canceled", {
+          api.get("/sessions/canceled", {
             headers: { "x-auth-token": token },
           }),
         ]);
@@ -126,8 +128,8 @@ const ProfilePage = () => {
   const handleUpdateProfile = async () => {
     const token = localStorage.getItem("token");
     try {
-      const { data } = await axios.put(
-        "http://localhost:5001/api/users/profile",
+      const { data } = await api.put(
+        "/users/profile",
         {
           name: user.name, // Ensure `name` is sent in the request
           status: user.status,
@@ -151,8 +153,8 @@ const ProfilePage = () => {
   const handleAccept = async (id) => {
     const token = localStorage.getItem("token");
     try {
-      const res = await axios.post(
-        "http://localhost:5001/api/sessions/accept",
+      const res = await api.post(
+        "/sessions/accept",
         { sessionId: id },
         { headers: { "x-auth-token": token } }
       );
@@ -203,7 +205,7 @@ const ProfilePage = () => {
                 <img
                   src={
                     user?.profilePicture
-                      ? `http://localhost:5001/uploads/profile-pictures/${user.profilePicture}`
+                      ? buildProfilePictureUrl(user.profilePicture)
                       : defaultAvatar
                   }
                   alt="Profile"
@@ -590,14 +592,14 @@ const ProfilePage = () => {
         {/* Edit Modal */}
         <AnimatePresence>
           {isModalOpen && (
-            <motion.div
+            <MotionDiv
               className="fixed inset-0 bg-black/20 flex items-center justify-center z-50"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
             >
-              <motion.div
+              <MotionDiv
                 className="bg-white rounded-lg shadow-xl p-6 w-full max-w-md mx-4 md:max-w-lg"
                 initial={{ y: "100vh", opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
@@ -650,8 +652,8 @@ const ProfilePage = () => {
                     Save
                   </button>
                 </div>
-              </motion.div>
-            </motion.div>
+              </MotionDiv>
+            </MotionDiv>
           )}
         </AnimatePresence>
         <Footer />

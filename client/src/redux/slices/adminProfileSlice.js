@@ -1,22 +1,14 @@
 // src/redux/slices/profileSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
-
-// Axios instance pointing at admin endpoints
-const API = axios.create({ baseURL: 'http://localhost:5001/api/admin' });
-API.interceptors.request.use(config => {
-  const token = localStorage.getItem('token');
-  if (token) config.headers['x-auth-token'] = token;
-  return config;
-});
+import { api as API } from '../../lib/api';
 
 // ─── Thunks ────────────────────────────────────────────────────────────
 // 1) Fetch profile
 export const fetchProfile = createAsyncThunk(
-  'profile/fetchProfile',
+  'adminProfile/fetchProfile',
   async (_, thunkAPI) => {
     try {
-      const res = await API.get('/profile');
+      const res = await API.get('/admin/profile');
       return res.data; // full user object
     } catch (err) {
       return thunkAPI.rejectWithValue(
@@ -29,10 +21,10 @@ export const fetchProfile = createAsyncThunk(
 
 
 export const updateProfile = createAsyncThunk(
-    'profile/updateProfile',
+    'adminProfile/updateProfile',
     async (formData, thunkAPI) => {
       try {
-        const res = await API.put('/profile', formData, {
+        const res = await API.put('/admin/profile', formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
@@ -48,10 +40,10 @@ export const updateProfile = createAsyncThunk(
 
 // 3) Change password
 export const changePassword = createAsyncThunk(
-  'profile/changePassword',
+  'adminProfile/changePassword',
   async ({ currentPassword, newPassword }, thunkAPI) => {
     try {
-      const res = await API.put('/profile/password', {
+      const res = await API.put('/admin/profile/password', {
         currentPassword,
         newPassword
       });

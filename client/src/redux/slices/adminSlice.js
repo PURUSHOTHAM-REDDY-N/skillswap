@@ -1,34 +1,7 @@
 
 // src/redux/slices/adminSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
-
-// ── 1) Create an Axios instance pointed at your backend ─────────────
-const API = axios.create({
-  baseURL: 'http://localhost:5001',  // ← ensure your Express server is here
-});
-
-// ── 2) Attach JWT & Log every request/response ──────────────────────
-API.interceptors.request.use(
-  config => {
-    const token = localStorage.getItem('token');
-    console.log('API Request:', config.method.toUpperCase(), config.url, 'Token:', token);
-    if (token) config.headers['x-auth-token'] = token;
-    return config;
-  },
-  error => {
-    console.error('Request Error:', error);
-    return Promise.reject(error);
-  }
-);
-
-API.interceptors.response.use(
-  response => response,
-  error => {
-    console.error('Response Error:', error);
-    return Promise.reject(error);
-  }
-);
+import { api as API } from '../../lib/api';
 
 // ============================
 // Thunks (Async Actions)
@@ -39,7 +12,7 @@ export const fetchUsers = createAsyncThunk(
   'admin/fetchUsers',
   async (_, thunkAPI) => {
     try {
-      const response = await API.get('/api/admin/users');
+      const response = await API.get('/admin/users');
       return response.data;
     } catch (err) {
       // Log full error so you can inspect network/headers/etc
@@ -58,8 +31,8 @@ export const fetchUsers = createAsyncThunk(
 // Add a new user
 export const addUser = createAsyncThunk('admin/addUser', async (userData, thunkAPI) => {
   try {
-    const response = await API.post('/api/admin/users', userData);
-    return response.data;
+    const response = await API.post('/admin/users', userData);
+    return response.data.user;
   } catch (err) {
     return thunkAPI.rejectWithValue(err.response?.data?.message || 'Failed to add user');
   }
@@ -68,7 +41,7 @@ export const addUser = createAsyncThunk('admin/addUser', async (userData, thunkA
 // Delete a user
 export const deleteUser = createAsyncThunk('admin/deleteUser', async (userId, thunkAPI) => {
   try {
-    await API.delete(`/api/admin/users/${userId}`);
+    await API.delete(`/admin/users/${userId}`);
     return userId;
   } catch (err) {
     return thunkAPI.rejectWithValue(err.response?.data?.message || 'Failed to delete user');
@@ -78,7 +51,7 @@ export const deleteUser = createAsyncThunk('admin/deleteUser', async (userId, th
 // Fetch reports
 export const fetchReports = createAsyncThunk('admin/fetchReports', async (_, thunkAPI) => {
   try {
-    const response = await API.get('/api/admin/reports');
+    const response = await API.get('/admin/reports');
     return response.data;
   } catch (err) {
     return thunkAPI.rejectWithValue(err.response?.data?.message || 'Failed to fetch reports');
@@ -88,7 +61,7 @@ export const fetchReports = createAsyncThunk('admin/fetchReports', async (_, thu
 // Resolve a report
 export const resolveReport = createAsyncThunk('admin/resolveReport', async (reportId, thunkAPI) => {
   try {
-    const response = await API.patch(`/api/admin/reports/${reportId}/resolve`);
+    const response = await API.patch(`/admin/reports/${reportId}/resolve`);
     return response.data;
   } catch (err) {
     return thunkAPI.rejectWithValue(err.response?.data?.message || 'Failed to resolve report');
@@ -100,7 +73,7 @@ export const fetchSessionChats = createAsyncThunk(
   'admin/fetchSessionChats',
   async (sessionId, thunkAPI) => {
     try {
-      const response = await API.get(`/api/admin/session-chats/${sessionId}`);
+      const response = await API.get(`/admin/session-chats/${sessionId}`);
       return response.data;
     } catch (err) {
       return thunkAPI.rejectWithValue(
@@ -114,7 +87,7 @@ export const fetchSessionChats = createAsyncThunk(
 // Fetch analytics
 export const fetchAnalytics = createAsyncThunk('admin/fetchAnalytics', async (_, thunkAPI) => {
   try {
-    const response = await API.get('/api/admin/analytics');
+    const response = await API.get('/admin/analytics');
     return response.data;
 
   } catch (err) {
@@ -127,7 +100,7 @@ export const fetchEngagementStats = createAsyncThunk(
   'admin/fetchEngagementStats',
   async (_, thunkAPI) => {
     try {
-      const response = await API.get('/api/admin/engagement-stats');
+      const response = await API.get('/admin/engagement-stats');
       return response.data;
     } catch (err) {
       return thunkAPI.rejectWithValue(
@@ -141,7 +114,7 @@ export const blockUser = createAsyncThunk(
   'admin/blockUser',
   async (userId, thunkAPI) => {
     try {
-      await API.patch(`/api/admin/users/${userId}/block`);
+      await API.patch(`/admin/users/${userId}/block`);
       return userId;
     } catch (err) {
       return thunkAPI.rejectWithValue(
@@ -155,7 +128,7 @@ export const unblockUser = createAsyncThunk(
   'admin/unblockUser',
   async (userId, thunkAPI) => {
     try {
-      await API.patch(`/api/admin/users/${userId}/unblock`);
+      await API.patch(`/admin/users/${userId}/unblock`);
       return userId;
     } catch (err) {
       return thunkAPI.rejectWithValue(

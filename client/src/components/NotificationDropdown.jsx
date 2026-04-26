@@ -1,13 +1,12 @@
 // src/components/NotificationDropdown.jsx
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { markAsRead } from '../redux/slices/notificationSlice';
-import axios from 'axios';  // Import axios here
+import { api } from '../lib/api';
 
 const NotificationDropdown = () => {
   const dispatch = useDispatch();
   const { notifications } = useSelector((state) => state.notifications);
-  const [isOpen, setIsOpen] = useState(false);  // State to toggle the dropdown visibility
   const [filter, setFilter] = useState('all'); // Default filter is 'all'
 
   const handleMarkAsRead = (id) => {
@@ -15,7 +14,7 @@ const NotificationDropdown = () => {
 
     // Persist the update to the backend
     const token = localStorage.getItem('token');
-    axios.patch(`http://localhost:5001/api/notifications/${id}/read`, {}, {
+    api.patch(`/notifications/${id}/read`, {}, {
       headers: { 'x-auth-token': token },
     }).catch((err) => {
       console.error('Error updating read status in backend:', err.message);
@@ -29,7 +28,7 @@ const NotificationDropdown = () => {
 
         // Persist the change to the backend
         const token = localStorage.getItem('token');
-        axios.patch(`http://localhost:5001/api/notifications/${notification._id}/read`, {}, {
+        api.patch(`/notifications/${notification._id}/read`, {}, {
           headers: { 'x-auth-token': token },
         }).catch((err) => {
           console.error('Error marking all notifications as read:', err.message);
@@ -52,18 +51,6 @@ const NotificationDropdown = () => {
     if (filter === 'read') return notif.isRead;
     return true; // Show all notifications when filter is 'all'
   });
-
-  // Close the dropdown when clicked outside
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (event.target.closest('.notification-dropdown') === null) {
-        setIsOpen(false);
-      }
-    };
-
-    document.addEventListener('click', handleClickOutside);
-    return () => document.removeEventListener('click', handleClickOutside);
-  }, []);
 
   return (
     <div className="absolute right-0 mt-2 w-64 bg-white border border-gray-300 rounded-lg shadow-md notification-dropdown">

@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { setUser } from '../redux/slices/profileSlice';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/navbar/Navbar';
 import { FaEdit } from 'react-icons/fa';
@@ -11,6 +10,7 @@ import defaultAvatar from '../assets/avatar.jpeg';
 import Background from '../components/background/Background';
 import '../components/background/Background.css';
 import Footer from '../components/footer/Footer';
+import { api, buildProfilePictureUrl } from '../lib/api';
 
 const ProfileSettingsPage = () => {
   const [formData, setFormData] = useState({
@@ -40,8 +40,8 @@ const ProfileSettingsPage = () => {
     const fetchProfile = async () => {
       const token = localStorage.getItem('token');
       try {
-        const res = await axios.get(
-          'http://localhost:5001/api/users/profile',
+        const res = await api.get(
+          '/users/profile',
           { headers: { 'x-auth-token': token } }
         );
         const data = res.data;
@@ -55,7 +55,7 @@ const ProfileSettingsPage = () => {
         });
         if (data.profilePicture) {
           setImagePreview(
-            `http://localhost:5001/uploads/profile-pictures/${data.profilePicture}`
+            buildProfilePictureUrl(data.profilePicture)
           );
         }
       } catch {
@@ -69,7 +69,7 @@ const ProfileSettingsPage = () => {
   const avatarSrc = imagePreview
     ? imagePreview
     : formData.profilePicture
-    ? `http://localhost:5001/uploads/profile-pictures/${formData.profilePicture}`
+    ? buildProfilePictureUrl(formData.profilePicture)
     : defaultAvatar;
 
   // Handle profile update
@@ -84,11 +84,11 @@ const handleUpdate = async () => {
   const skillsToLearnArray = formData.skillsToLearn.split(',').map((s) => s.trim()).filter((s) => s !== ''); // Create an array of skills
 
   // Append each skill separately to FormData
-  skillsToTeachArray.forEach((skill, index) => {
+  skillsToTeachArray.forEach((skill) => {
     payload.append('skillsToTeach[]', skill); // The '[]' syntax will ensure they are treated as an array
   });
 
-  skillsToLearnArray.forEach((skill, index) => {
+  skillsToLearnArray.forEach((skill) => {
     payload.append('skillsToLearn[]', skill); // Same for skillsToLearn
   });
 
@@ -103,7 +103,7 @@ const handleUpdate = async () => {
 
   try {
     const token = localStorage.getItem('token');
-    const res = await axios.put('http://localhost:5001/api/users/profile', payload, {
+    const res = await api.put('/users/profile', payload, {
       headers: {
         'x-auth-token': token,
         'Content-Type': 'multipart/form-data',
@@ -124,8 +124,8 @@ const handleUpdate = async () => {
     }
     try {
       const token = localStorage.getItem('token');
-      await axios.put(
-        'http://localhost:5001/api/users/change-password',
+      await api.put(
+        '/users/change-password',
         {
           currentPassword: passwords.currentPassword,
           newPassword: passwords.newPassword
