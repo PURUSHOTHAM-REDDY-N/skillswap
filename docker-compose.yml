@@ -13,7 +13,7 @@ services:
       - skillswap
 
   backend:
-    image: ghcr.io/PURUSHOTHAM-REDDY-N/skillswap-backend:latest
+    image: ghcr.io/purushotham-reddy-n/skillswap-backend:latest
     container_name: skillswap-backend
     restart: unless-stopped
     depends_on:
@@ -38,7 +38,7 @@ services:
       - skillswap
 
   client:
-    image: ghcr.io/PURUSHOTHAM-REDDY-N/skillswap-client:latest
+    image: ghcr.io/purushotham-reddy-n/skillswap-client:latest
     container_name: skillswap-client
     restart: unless-stopped
     depends_on:
