@@ -8,12 +8,6 @@ import Footer from "../components/footer/Footer";
 import Background from "../components/background/Background";
 import "../components/background/Background.css";
 
-// Importing images
-import ahmadImg from "../assets/ahmad.jpg";
-import wahajImg from "../assets/wahaj.jpg";
-import miraalImg from "../assets/miraal.jpg";
-import muneebImg from "../assets/muneeb.jpg";
-import hashimImg from "../assets/hashim.jpeg";
 
 const MotionDiv = motion.div;
 const MotionH1 = motion.h1;
