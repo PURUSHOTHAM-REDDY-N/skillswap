@@ -22,7 +22,7 @@ services:
     environment:
       PORT: ${PORT:-5001}
       MONGO_URI: mongodb://mongo:27017/${MONGO_DB:-skillswap}
-      JWT_SECRET: ${JWT_SECRET:?set JWT_SECRET}
+      JWT_SECRET: ${JWT_SECRET:-temp_secret_for_ci}
 
       ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@skillswap.local}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin123}
