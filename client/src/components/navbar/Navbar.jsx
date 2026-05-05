@@ -26,9 +26,9 @@ const Navbar = () => {
     <nav className="bg-white/20 backdrop-blur-lg border-b border-white/30 shadow-md text-white font-bold">
       <div className="max-w-screen-xl mx-auto flex items-center justify-between p-4">
         {/* Logo */}
-        <NavLink to="/" className="text-3xl font-extrabold text-white drop-shadow-md">
+        <div className="text-3xl font-extrabold text-white drop-shadow-md">
           SkillSwap
-        </NavLink>
+        </div>
 
         {/* Hamburger menu button (mobile) */}
         <div className="md:hidden">
@@ -44,7 +44,6 @@ const Navbar = () => {
         {/* Links container */}
         <div className={`flex-1 justify-end items-center ${menuOpen ? 'block' : 'hidden'} md:flex`}>          
           <div className="flex flex-col md:flex-row md:space-x-4 lg:space-x-8 text-xl">
-            <NavLink to="/" className={navLinkClass} onClick={() => setMenuOpen(false)}>Home</NavLink>
             {token ? (
               <>                
                 <NavLink to="/profile" className={navLinkClass}>Profile</NavLink>
