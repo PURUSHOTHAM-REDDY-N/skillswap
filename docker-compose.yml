@@ -13,8 +13,7 @@ services:
       - skillswap
 
   backend:
-    build:
-      context: ./backend
+    image: ghcr.io/PURUSHOTHAM-REDDY-N/skillswap-backend:latest
     container_name: skillswap-backend
     restart: unless-stopped
     depends_on:
@@ -34,32 +33,22 @@ services:
     ports:
       - "${BACKEND_BIND_ADDRESS:-0.0.0.0}:${PORT:-5001}:5001"
     volumes:
-      - ./backend:/app
-      - /app/node_modules
       - ./backend/uploads:/app/uploads
-    command: npm start
     networks:
       - skillswap
 
   client:
-    build:
-      context: ./client
+    image: ghcr.io/PURUSHOTHAM-REDDY-N/skillswap-client:latest
     container_name: skillswap-client
     restart: unless-stopped
     depends_on:
       - backend
     environment:
-      CHOKIDAR_USEPOLLING: "true"
-
       VITE_API_URL: ${VITE_API_URL:-http://localhost:5001}
       VITE_SOCKET_URL: ${VITE_SOCKET_URL:-http://localhost:5001}
       VITE_UPLOADS_URL: ${VITE_UPLOADS_URL:-http://localhost:5001}
     ports:
       - "${FRONTEND_PORT:-5173}:5173"
-    volumes:
-      - ./client:/app
-      - /app/node_modules
-    command: npm run dev -- --host 0.0.0.0
     networks:
       - skillswap
 
