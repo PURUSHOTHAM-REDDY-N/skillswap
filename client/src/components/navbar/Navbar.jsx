@@ -44,7 +44,7 @@ const Navbar = () => {
         {/* Links container */}
         <div className={`flex-1 justify-end items-center ${menuOpen ? 'block' : 'hidden'} md:flex`}>          
           <div className="flex flex-col md:flex-row md:space-x-4 lg:space-x-8 text-xl">
-            <NavLink to="/" className={navLinkClass}>Home</NavLink>
+            <NavLink to="/" className={navLinkClass} onClick={() => setMenuOpen(false)}>Home</NavLink>
             {token ? (
               <>                
                 <NavLink to="/profile" className={navLinkClass}>Profile</NavLink>
