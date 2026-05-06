@@ -19,7 +19,7 @@ import ScrollToTop from "./components/ScrollToTop";
 import PrivateRoute        from './components/common/PrivateRoute';
 
 import "./App.css";
-
+import 'react-toastify/dist/ReactToastify.css'; 
 function App() {
   return (
     <Router>

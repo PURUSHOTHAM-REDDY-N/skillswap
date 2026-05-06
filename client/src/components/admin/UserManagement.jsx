@@ -6,6 +6,7 @@ import {
   deleteUser,
   unblockUser
 } from '../../redux/slices/adminSlice';
+import { ToastContainer, toast } from 'react-toastify';
 
 const UserManagement = () => {
   const dispatch = useDispatch();
@@ -30,6 +31,7 @@ const UserManagement = () => {
     e.preventDefault();
     dispatch(addUser(formData)).then(() => {
       setFormData({ name: '', email: '', password: '', role: 'user' });
+      toast.success('User added successfully!');
       dispatch(fetchUsers());
     });
   };
@@ -95,6 +97,7 @@ const UserManagement = () => {
 
   return (
     <div className="p-6 space-y-6">
+      <ToastContainer /> 
       <h2 className="text-3xl font-bold mb-6 text-blue-700 text-left">
         User Management
       </h2>

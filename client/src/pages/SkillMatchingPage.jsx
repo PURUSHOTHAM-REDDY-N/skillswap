@@ -6,7 +6,6 @@ import Background from "../components/background/Background";
 import "../components/background/Background.css";
 import { FaPaperPlane, FaSearch } from 'react-icons/fa';
 import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css'; // Make sure to import the CSS
 import Footer from "../components/footer/Footer";
 import { api, buildProfilePictureUrl } from '../lib/api';
 
