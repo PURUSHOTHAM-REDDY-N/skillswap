@@ -9,6 +9,10 @@
     "lint": "eslint .",
     "preview": "vite preview"
   },
+  "pre-commit": [
+    "lint",
+    "build"
+  ],
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.7.2",
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
@@ -25,6 +29,7 @@
     "lucide-react": "^0.503.0",
     "postcss": "^8.5.3",
     "react": "^19.0.0",
+    "react-avatar": "^5.0.4",
     "react-circular-progressbar": "^2.2.0",
     "react-dom": "^19.0.0",
     "react-icons": "^5.5.0",
@@ -45,6 +50,7 @@
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.19",
     "globals": "^16.0.0",
+    "pre-commit": "^2.0.0",
     "tailwindcss": "^4.1.5",
     "vite": "^6.3.1"
   }

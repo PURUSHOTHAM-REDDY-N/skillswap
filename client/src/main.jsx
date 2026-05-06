@@ -6,6 +6,7 @@ import './index.css';  // Global CSS file
 import App from './App.jsx';  // Import the App component
 import store from './redux/store';  // Import the Redux store
 import '@fortawesome/fontawesome-free/css/all.min.css';
+import { ConfigProvider } from 'react-avatar';
 
 
 if ("scrollRestoration" in window.history) {
@@ -14,7 +15,9 @@ if ("scrollRestoration" in window.history) {
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <Provider store={store}>  {/* Wrap App component with Redux Provider */}
+      <ConfigProvider colors={['red', 'green', 'blue']}>
       <App />
+      </ConfigProvider>
     </Provider>
   </StrictMode>
 );

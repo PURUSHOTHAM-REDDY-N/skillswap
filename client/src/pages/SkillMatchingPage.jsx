@@ -8,6 +8,7 @@ import { FaPaperPlane, FaSearch } from 'react-icons/fa';
 import { ToastContainer, toast } from 'react-toastify';
 import Footer from "../components/footer/Footer";
 import { api, buildProfilePictureUrl } from '../lib/api';
+import Avatar from 'react-avatar';
 
 const SkillMatchingPage = () => {
   const [matches, setMatches] = useState([]);
@@ -190,11 +191,16 @@ const SkillMatchingPage = () => {
                     className="bg-gradient-to-br from-blue-400 via-blue-300 to-blue-200 rounded-2xl shadow-lg p-6 min-h-[22rem] flex flex-col justify-between transition-shadow duration-300 hover:shadow-2xl">
                     {/* User profile and skill display */}
                     <div className="flex items-center gap-4 mb-4">
+                      {match.user?.profilePicture ?
                       <img
                         className="w-14 h-14 rounded-full border border-white/20"
                         src={buildProfilePictureUrl(match.user?.profilePicture)}
                         alt="Avatar"
                       />
+                      :<>
+                      <Avatar name={match.user.name} size="40" round={true} />
+                      </>}
+                      
                       <div className="w-full">
                         <div className="flex flex-wrap items-center justify-between">
                           <h3 className="text-lg font-bold tracking-wide text-white">{match.user.name}</h3>
