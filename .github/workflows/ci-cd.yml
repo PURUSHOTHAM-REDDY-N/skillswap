@@ -63,6 +63,7 @@ jobs:
 
     strategy:
       matrix:
+        include:
           - image_name: skillswap-client
             context: ./client
           - image_name: skillswap-backend
